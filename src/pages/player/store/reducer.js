@@ -6,6 +6,7 @@ import {
   CHANGE_PLAY_LIST,
   CHANGE_CURRENT_SONG_INDEX,
   CHANGE_SEQUENCE,
+  CHANGE_CURRENT_LYRIC_INDEX,
 } from "./constant";
 
 const { Map } = require("immutable");
@@ -13,6 +14,7 @@ const { Map } = require("immutable");
 const defaultState = Map({
   currentSongIndex: 0, //当前播放歌曲的索引
   sequence: 0, //0 循环 1 随机 2 单曲
+  currentLyricIndex: 0, //当前播放歌词索引
   currentSong: {}, //当前播放歌曲
   currentSongLyric: [],
   playList: [
@@ -242,6 +244,8 @@ export default function reducer(state = defaultState, action) {
       return state.set("currentSongIndex", action.index);
     case CHANGE_SEQUENCE:
       return state.set("sequence", action.sequence);
+    case CHANGE_CURRENT_LYRIC_INDEX:
+      return state.set("currentLyricIndex", action.index);
     default:
       return state;
   }

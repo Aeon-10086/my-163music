@@ -6,6 +6,7 @@ import {
   CHANGE_PLAY_LIST,
   CHANGE_CURRENT_SONG_INDEX,
   CHANGE_SEQUENCE,
+  CHANGE_CURRENT_LYRIC_INDEX,
 } from "./constant";
 import {
   getSongDetail,
@@ -42,6 +43,10 @@ export const changePlayListAction = (playList) => ({
 export const changeSequenceAction = (sequence) => ({
   type: CHANGE_SEQUENCE,
   sequence,
+});
+export const changeCurrentLyricIndexAction = (index) => ({
+  type: CHANGE_CURRENT_LYRIC_INDEX,
+  index,
 });
 //直接获取歌曲详细信息
 /* export const getCurrentSongAction = (ids) => {
@@ -86,6 +91,7 @@ export const changePlayingSongAction = (tag) => {
         while (randomIndex === currentSongIndex) {
           randomIndex = getRandom(playList.length);
         }
+        dispatch(getCurrentSongLyricAction(playList[randomIndex].id));
         dispatch(changeCurrentSongAction(playList[randomIndex]));
         dispatch(changeCurrentSongIndexAction(randomIndex));
         break;
@@ -96,10 +102,11 @@ export const changePlayingSongAction = (tag) => {
         } else if (currentSongIndex < 0) {
           currentSongIndex = playList.length - 1;
         }
+        dispatch(getCurrentSongLyricAction(playList[currentSongIndex].id));
         dispatch(changeCurrentSongAction(playList[currentSongIndex]));
         dispatch(changeCurrentSongIndexAction(currentSongIndex));
     }
-    dispatch(getCurrentSongLyricAction(playList[currentSongIndex].id));
+    // dispatch(getCurrentSongLyricAction(playList[currentSongIndex].id));
   };
 };
 // 获取歌曲歌词，在获取歌曲时派发

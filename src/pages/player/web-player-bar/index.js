@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 
-import { Slider } from "antd";
 import {
   PlayerBarWrap,
   BarContentWrap,
@@ -10,6 +9,7 @@ import {
 } from "./style";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
+  changeCurrentLyricIndexAction,
   changePlayingSongAction,
   changeSequenceAction,
   getCurrentSongAction,
@@ -21,7 +21,8 @@ import {
 } from "@/utils/format-utils";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
-
+// 外部组件
+import { Slider, message } from "antd";
 export default memo(function ICPlayerBar() {
   //state
   const [currentTime, setCurrentTime] = useState(0);
@@ -33,11 +34,19 @@ export default memo(function ICPlayerBar() {
   const [isChangeVolume, setIsChangeVolume] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   //redux
-  const { currentSong, playList, sequence } = useSelector(
+  const {
+    currentSong,
+    playList,
+    sequence,
+    lyric,
+    currentLyricIndex,
+  } = useSelector(
     (state) => ({
       currentSong: state.getIn(["player", "currentSong"]),
       playList: state.getIn(["player", "playList"]),
       sequence: state.getIn(["player", "sequence"]),
+      lyric: state.getIn(["player", "currentSongLyric"]),
+      currentLyricIndex: state.getIn(["player", "currentLyricIndex"]),
     }),
     shallowEqual
   );
@@ -48,6 +57,15 @@ export default memo(function ICPlayerBar() {
   }, [dispatch]);
   useEffect(() => {
     audioRef.current.src = getPlayerUrl(currentSong.id);
+    // 切换歌曲后立刻切换当前显示歌词
+    dispatch(changeCurrentLyricIndexAction(0));
+    const content = lyric[0] && lyric[0].content;
+    message.open({
+      key: "lyric", //key相同的message只会出现一个
+      content,
+      duration: 0,
+      className: "desk-lyric",
+    });
     // 解决正在播放时切换歌曲，新歌未播放，按钮显示异常问题
     audioRef.current
       .play()
@@ -57,7 +75,7 @@ export default memo(function ICPlayerBar() {
       .catch((err) => {
         setIsPlaying(false);
       });
-  }, [currentSong]);
+  }, [currentSong, dispatch, lyric]);
 
   const audioRef = useRef();
   // other handle: 初始化数据时，可能取到的是 undefined
@@ -73,14 +91,34 @@ export default memo(function ICPlayerBar() {
   }, [isPlaying, audioRef]);
   const timeUpdateFunc = useCallback(
     (e) => {
+      let now = e.target.currentTime * 1000;
       if (!isOnChange) {
-        setCurrentTime(e.target.currentTime * 1000);
+        setCurrentTime(now);
         // 由于进度条最大值仅有100时，进度条动画视觉效果不平滑，因此将进度条最大值扩大至10000以完成平滑过渡
-        setProgress(((e.target.currentTime * 1000) / duration) * 10000);
+        setProgress((now / duration) * 10000);
       }
-      // setProgress(currentTime);
+      //在此处匹配歌词与播放时间，当前歌词索引应该保存在redux中（currentLyricIndex)
+      let i = 0;
+      for (; i < lyric.length; i++) {
+        let lyricItem = lyric[i];
+        if (now < lyricItem.time) {
+          break;
+        }
+      }
+      i = i === 0 ? 0 : i - 1;
+      // 判断当前index是否发生改变，若改变则重新dispatch
+      if (currentLyricIndex !== i) {
+        dispatch(changeCurrentLyricIndexAction(i));
+        const content = lyric[i] && lyric[i].content;
+        message.open({
+          key: "lyric", //key相同的message只会出现一个
+          content,
+          duration: 0,
+          className: "desk-lyric", //添加样式类名，由于该组件会被添加到根组件外，应该把相关样式写在全局样式表中
+        });
+      }
     },
-    [isOnChange, duration]
+    [isOnChange, duration, lyric, currentLyricIndex, dispatch]
   );
   const changeFunc = useCallback(
     (value) => {
