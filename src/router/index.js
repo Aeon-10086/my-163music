@@ -1,5 +1,22 @@
 import React from "react";
-import ICDiscover from "@/pages/discover";
+import { Redirect } from "react-router-dom";
+
+// 路由的懒加载
+const ICDiscover = React.lazy(() => import("@/pages/discover"));
+const ICRecomand = React.lazy(() =>
+  import("@/pages/discover/c-pages/recomand")
+);
+const ICTopList = React.lazy(() => import("@/pages/discover/c-pages/toplist"));
+const ICPlayList = React.lazy(() =>
+  import("@/pages/discover/c-pages/playlist")
+);
+const ICDjRadio = React.lazy(() => import("@/pages/discover/c-pages/djradio"));
+const ICArtist = React.lazy(() => import("@/pages/discover/c-pages/artist"));
+const ICAlbum = React.lazy(() => import("@/pages/discover/c-pages/album"));
+const ICPlayer = React.lazy(() => import("@/pages/player"));
+const ICMine = React.lazy(() => import("@/pages/mine"));
+const ICFriend = React.lazy(() => import("@/pages/friend"));
+/* import ICDiscover from "@/pages/discover";
 import ICRecomand from "../pages/discover/c-pages/recomand";
 import ICTopList from "../pages/discover/c-pages/toplist";
 import ICPlayList from "../pages/discover/c-pages/playlist";
@@ -8,9 +25,7 @@ import ICArtist from "../pages/discover/c-pages/artist";
 import ICAlbum from "../pages/discover/c-pages/album";
 import ICPlayer from "@/pages/player";
 import ICMine from "@/pages/mine";
-import ICFriend from "@/pages/friend";
-
-import { Redirect } from "react-router-dom";
+import ICFriend from "@/pages/friend"; */
 
 const routes = [
   {

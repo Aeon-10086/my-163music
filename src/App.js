@@ -1,5 +1,5 @@
 // 第三方库
-import React, { memo } from "react";
+import React, { memo, Suspense } from "react";
 import { renderRoutes } from "react-router-config";
 import { HashRouter } from "react-router-dom";
 // 功能性
@@ -16,7 +16,10 @@ export default memo(function App() {
     <Provider store={store}>
       <HashRouter>
         <ICAppHeader />
-        {renderRoutes(routes)}
+        {/* 当使用路由懒加载时，需要一个占位符，fallback表示当页面未加载完成时所显示的内容 */}
+        <Suspense fallback={<div>Page Loading</div>}>
+          {renderRoutes(routes)}
+        </Suspense>
         <ICAppFooter />
         <ICPlayerBar />
       </HashRouter>
