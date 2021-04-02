@@ -23,7 +23,10 @@ export default memo(function TopBanner() {
   }, [dispatch]);
   const carouselRef = useRef();
   const bannerChange = useCallback((from, to) => {
-    setCurrentIndex(to);
+    setTimeout(() => {
+      //采用异步解决点击nav图片仅背景切换的bug
+      setCurrentIndex(to);
+    }, 0);
   }, []);
   // 其他逻辑代码
   const bgImage =
