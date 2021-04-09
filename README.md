@@ -1,5 +1,15 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
+## 前言
+  该项目写于初学前端时期，各方面的内容尚且不够完善且并未完全完成，未做SSR优化，组件命名尚且存在歧义部分，有机会应该会重构
+  - 待做：
+    + 使用 Next.js 重写
+    + 播放列表的黑色部分的添加
+    + 欠缺页面的补完
+    + 歌曲搜索模块
+    + 登录、评论模块(尝试结合Node.js中完成的接口？)
+    + 组件规范命名
+    + 添加合理的注释
+    + 尝试 Saga 版本(选)
 ## Available Scripts
 
 In the project directory, you can run:
